@@ -1,0 +1,55 @@
+# creem-go creem.io SDK implementation in Golang
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/bububa/creem-go.svg)](https://pkg.go.dev/github.com/bububa/creem-go)
+[![Go](https://github.com/bububa/creem-go/actions/workflows/go.yml/badge.svg)](https://github.com/bububa/creem-go/actions/workflows/go.yml)
+[![goreleaser](https://github.com/bububa/creem-go/actions/workflows/goreleaser.yml/badge.svg)](https://github.com/bububa/creem-go/actions/workflows/goreleaser.yml)
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/bububa/creem-go.svg)](https://github.com/bububa/creem-go)
+[![GoReportCard](https://goreportcard.com/badge/github.com/bububa/creem-go)](https://goreportcard.com/report/github.com/bububa/creem-go)
+[![GitHub license](https://img.shields.io/github/license/bububa/creem-go.svg)](https://github.com/bububa/creem-go/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/bububa/creem-go.svg)](https://gitHub.com/bububa/creem-go/releases/)
+
+## Installation
+
+```bash
+go install github.com/bububa/creem-go
+```
+
+## Usage
+
+### Create Checkout Session
+
+```golang
+import (
+    "github.com/bububa/creem-go"
+    "github.com/bububa/creem-go/checkout"
+)
+func main() {
+  clt := creem.New(os.Getenv("CREEM_KEY"))
+  req := checkout.CreateRequest {
+    ProductID: "xxx",
+  }
+  var ret Session
+  if err := checkout.Create(context.Background(), &req, &ret); err != nil {
+    panic(err)
+  }
+  fmt.Println(ret)
+}
+```
+
+### Get Checkout Session
+
+```golang
+import (
+    "github.com/bububa/creem-go"
+    "github.com/bububa/creem-go/checkout"
+)
+func main() {
+  clt := creem.New(os.Getenv("CREEM_KEY"))
+  checkoutID := "xxx"
+  var ret Session
+  if err := checkout.Get(context.Background(), checkoutID, &ret); err != nil {
+    panic(err)
+  }
+  fmt.Println(ret)
+}
+```
