@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/bububa/creem-go"
-	"github.com/bububa/creem-go/license"
+	"github.com/bububa/creem-go/licenses"
 )
 
 // CreateRequest create checkout request payload
@@ -101,7 +101,7 @@ type Session struct {
 // Feature features issued for the order.
 type Feature struct {
 	// License key issued for the order.
-	License *license.License `json:"license,omitempty"`
+	License *licenses.License `json:"license,omitempty"`
 }
 
 type OrderStatus string
