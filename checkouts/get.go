@@ -1,4 +1,4 @@
-package checkout
+package checkouts
 
 import (
 	"context"
