@@ -131,7 +131,7 @@ type Order struct {
 	// Status Current status of the order.
 	Status OrderStatus `json:"stats,omitempty"`
 	// Type The type of order. This can specify whether it's a regular purchase, subscription, etc.
-	Typte OrderType `json:"type,omitempty"`
+	Type OrderType `json:"type,omitempty"`
 	// CreateTime Creation date of the order
 	CreateTime time.Time `json:"create_time,omitzero"`
 	// UpdateTime Last updated date of the order
