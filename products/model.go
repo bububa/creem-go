@@ -33,6 +33,7 @@ type CreateRequest struct {
 	// DefaultSuccessURL The URL to which the user will be redirected after successfull payment.
 	DefaultSuccessURL string `json:"default_success_url,omitempty"`
 	// CustomField Collect additional information from your customer using custom fields during checkout. Up to 3 fields are supported.
+	CustomField []creem.CustomField `json:"custom_field,omitempty"`
 }
 
 func (r CreateRequest) Gateway() string {
@@ -69,21 +70,6 @@ type TextField struct {
 	MaxLength int `json:"max_length,omitempty"`
 	// MinLength Minimum character length requirement for the input.
 	MinLength int `json:"min_length,omitempty"`
-}
-
-// CustomField Collect additional information from your customer using custom fields during checkout. Up to 3 fields are supported.
-type CustomField struct {
-	// Type the type of the field.
-	Type CustomFieldType `json:"type,omitempty"`
-	// Key Unique key for custom field. Must be unique to this field, alphanumeric, and up to 200 characters.
-	// Maximum length: 200
-	Key string `json:"key,omitempty"`
-	// Label The label for the field, displayed to the customer, up to 50 characters
-	Label string `json:"label,omitempty"`
-	// Optional Whether the customer is required to complete the field. Defaults to false
-	Optional bool `json:"optional,omitempty"`
-	// Text configuration for type of text field.
-	Text *TextField `json:"text,omitempty"`
 }
 
 type Product struct {

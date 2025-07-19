@@ -1,2 +1,2 @@
-// Package cream creem.io golang SDK
+// Package creem creem.io golang SDK
 package creem

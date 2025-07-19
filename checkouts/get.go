@@ -8,7 +8,7 @@ import (
 )
 
 // Get get Checkout Session
-func Get(ctx context.Context, clt *creem.Client, checkoutID string, ret *Session) error {
+func Get(ctx context.Context, clt *creem.Client, checkoutID string, ret *Checkout) error {
 	req := GetRequest{
 		ID: checkoutID,
 	}

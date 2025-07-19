@@ -15,10 +15,3 @@ const (
 	TaxInclusive TaxMode = "inclusive"
 	TaxExclusive TaxMode = "exclusive"
 )
-
-// CustomFieldType the type of the field.
-type CustomFieldType string
-
-const (
-	TextFieldType CustomFieldType = "text"
-)

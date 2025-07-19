@@ -34,4 +34,6 @@ var (
 	ErrUpdateSubscription  = errors.New("update subscription failed")
 	ErrUpgradeSubscription = errors.New("upgrade subscription failed")
 	ErrCancelSubscription  = errors.New("cancel subscription failed")
+
+	ErrInvalidSignature = errors.New("invalid signature")
 )
