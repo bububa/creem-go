@@ -11,4 +11,12 @@ const (
 	TestMode    Mode = "test"
 	ProdMode    Mode = "prod"
 	SandboxMode Mode = "sandbox"
+	LocalMode   Mode = "local"
+)
+
+// CustomFieldType the type of the field.
+type CustomFieldType string
+
+const (
+	TextFieldType CustomFieldType = "text"
 )

@@ -1,6 +1,8 @@
-package checkout
+package checkouts
 
 import (
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/bububa/creem-go"
@@ -9,6 +11,7 @@ import (
 
 // CreateRequest create checkout request payload
 type CreateRequest struct {
+	creem.PostRequest
 	// ProductID the ID of the product associated with the checkout session.
 	ProductID string `json:"product_id,omitempty"`
 	// RequestID identify and track each checkout request.
@@ -20,11 +23,24 @@ type CreateRequest struct {
 	// customer data for checkout session. This will prefill the customer info on the checkout page
 	Customer *Customer `json:"customer,omitempty"`
 	// CustomField collect additional information from your customer using custom fields. Up to 3 fields are supported.
-	CustomField []CustomField `json:"custom_field,omitempty"`
+	CustomField []creem.CustomField `json:"custom_field,omitempty"`
 	// SuccessURL the URL to which the user will be redirected after the checkout process is completed.
 	SuccessURL string `json:"success_url,omitempty"`
 	// Metadata Metadata for the checkout in the form of key-value pairs
 	Metadata map[string]any `json:"metadata,omitempty"`
+}
+
+func (r CreateRequest) Gateway() string {
+	return "v1/checkouts"
+}
+
+type GetRequest struct {
+	creem.GetRequest
+	ID string `json:"id,omitempty"`
+}
+
+func (r GetRequest) Gateway() string {
+	return fmt.Sprintf("v1/checkouts?checkout_id=%s", url.QueryEscape(r.ID))
 }
 
 // Customer customer data for checkout session
@@ -35,37 +51,7 @@ type Customer struct {
 	Email string `json:"email,omitempty"`
 }
 
-// CustomFieldType the type of the field.
-type CustomFieldType string
-
-const (
-	TextFieldType CustomFieldType = "text"
-)
-
-// TextField configuration for type of text field.
-type TextField struct {
-	// MaxLength Maximum character length constraint for the input.
-	MaxLength int `json:"max_length,omitempty"`
-	// MinLength Minimum character length requirement for the input.
-	MinLength int `json:"min_length,omitempty"`
-}
-
-// CustomField collect additional information from your customer using custom fields. Up to 3 fields are supported.
-type CustomField struct {
-	// Type the type of the field.
-	Type CustomFieldType `json:"type,omitempty"`
-	// Key Unique key for custom field. Must be unique to this field, alphanumeric, and up to 200 characters.
-	// Maximum length: 200
-	Key string `json:"key,omitempty"`
-	// Label The label for the field, displayed to the customer, up to 50 characters
-	Label string `json:"label,omitempty"`
-	// Optional Whether the customer is required to complete the field. Defaults to false
-	Optional bool `json:"optional,omitempty"`
-	// Text configuration for type of text field.
-	Text *TextField `json:"text,omitempty"`
-}
-
-type Session struct {
+type Checkout struct {
 	// ID unique identifier for the object.
 	ID string `json:"id,omitempty"`
 	// Mode string representing the environmentt.
@@ -87,7 +73,7 @@ type Session struct {
 	// Customer The customer associated with the checkout session.
 	Customer string `json:"customer,omitempty"`
 	// CustomFields Additional information collected from your customer during the checkout process.
-	CustomFields []CustomField `json:"custom_fields,omitempty"`
+	CustomFields []creem.CustomField `json:"custom_fields,omitempty"`
 	// CheckoutURL The URL to which the customer will be redirected to complete the payment.
 	CheckoutURL string `json:"checkout_url,omitempty"`
 	// SuccessURL The URL to which the user will be redirected after the checkout process is completed.
@@ -103,20 +89,6 @@ type Feature struct {
 	// License key issued for the order.
 	License *licenses.License `json:"license,omitempty"`
 }
-
-type OrderStatus string
-
-const (
-	PendingOrder OrderStatus = "pending"
-	PaidOrder    OrderStatus = "paid"
-)
-
-type OrderType string
-
-const (
-	RecurringOrder OrderType = "recurring"
-	OnetimeOrder   OrderType = "onetime"
-)
 
 // Order the order associated with the checkout session.
 type Order struct {
@@ -136,7 +108,7 @@ type Order struct {
 	// Status Current status of the order.
 	Status OrderStatus `json:"stats,omitempty"`
 	// Type The type of order. This can specify whether it's a regular purchase, subscription, etc.
-	Typte OrderType `json:"type,omitempty"`
+	Type OrderType `json:"type,omitempty"`
 	// CreateTime Creation date of the order
 	CreateTime time.Time `json:"create_time,omitzero"`
 	// UpdateTime Last updated date of the order

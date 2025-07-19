@@ -1,12 +1,5 @@
 package creem
 
-type PageInfo struct {
-	// PageNumber The page number
-	PageNumber int64 `json:"page_number,omitempty"`
-	// PageSize The the page size
-	PageSize int64 `json:"page_size,omitempty"`
-}
-
 // Pagination details for the list
 type Pagination struct {
 	// TotalRecords Total number of records in the list

@@ -25,4 +25,15 @@ var (
 	ErrValidateLicense   = errors.New("validate license failed")
 	ErrActivateLicense   = errors.New("activate license failed")
 	ErrDeactivateLicense = errors.New("deactivate license failed")
+
+	ErrCreateDiscount = errors.New("create discount failed")
+	ErrDeleteDiscount = errors.New("delete discount failed")
+	ErrGetDiscount    = errors.New("get discount failed")
+
+	ErrGetSubscription     = errors.New("get subscription failed")
+	ErrUpdateSubscription  = errors.New("update subscription failed")
+	ErrUpgradeSubscription = errors.New("upgrade subscription failed")
+	ErrCancelSubscription  = errors.New("cancel subscription failed")
+
+	ErrInvalidSignature = errors.New("invalid signature")
 )

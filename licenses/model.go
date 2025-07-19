@@ -7,24 +7,39 @@ import (
 )
 
 type ValidateRequest struct {
+	creem.PostRequest
 	// Key The license key to validate.
 	Key string `json:"key,omitempty"`
 	// InstanceID Id of the instance to validate.
 	InstanceID string `json:"instance_id,omitempty"`
 }
 
+func (r ValidateRequest) Gateway() string {
+	return "v1/licenses/validate"
+}
+
 type ActivateRequest struct {
+	creem.PostRequest
 	// Key The license key to activate.
 	Key string `json:"key,omitempty"`
 	// InstanceName A label for the new instance to identify it in Creem.
 	InstanceName string `json:"instance_name,omitempty"`
 }
 
+func (r ActivateRequest) Gateway() string {
+	return "v1/licenses/activate"
+}
+
 type DeactivateRequest struct {
+	creem.PostRequest
 	// Key The license key to deactivate.
 	Key string `json:"key,omitempty"`
 	// InstanceID Id of the instance to deactivate.
 	InstanceID string `json:"instance_id,omitempty"`
+}
+
+func (r DeactivateRequest) Gateway() string {
+	return "v1/licenses/deactivate"
 }
 
 // License key issued
@@ -50,16 +65,6 @@ type License struct {
 	// Instance Associated license instances.
 	Instance *Instance `json:"instance,omitempty"`
 }
-
-// LicenseStatus The current status of the license key.
-type LicenseStatus string
-
-const (
-	InactiveLicense LicenseStatus = "inactive"
-	ActiveLicense   LicenseStatus = "active"
-	ExpiredLicense  LicenseStatus = "expired"
-	DisabledLicese  LicenseStatus = "disabled"
-)
 
 // Instance Associated license instances.
 type Instance struct {

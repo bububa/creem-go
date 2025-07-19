@@ -1,7 +1,11 @@
 package creem
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -41,7 +45,23 @@ func (c *Client) BaseURL() string {
 	return BaseURL
 }
 
-func (c *Client) Do(req *http.Request, resp any) error {
+func (c *Client) Do(ctx context.Context, req Request, resp any) error {
+	var buf io.ReadWriter
+	if req.Method() != http.MethodPost {
+		buf = new(bytes.Buffer)
+		if err := json.NewEncoder(buf).Encode(req); err != nil {
+			return err
+		}
+	}
+	gw := fmt.Sprintf("%s/%s", c.BaseURL(), req.Gateway())
+	httpReq, err := http.NewRequestWithContext(ctx, req.Method(), gw, buf)
+	if err != nil {
+		return err
+	}
+	return c.fetch(httpReq, resp)
+}
+
+func (c *Client) fetch(req *http.Request, resp any) error {
 	req.Header.Set("x-api-key", c.key)
 	req.Header.Set("Content-type", "application/json")
 	httpResp, err := c.http.Do(req)
