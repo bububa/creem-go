@@ -1,6 +1,8 @@
 package checkouts
 
 import (
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/bububa/creem-go"
@@ -9,6 +11,7 @@ import (
 
 // CreateRequest create checkout request payload
 type CreateRequest struct {
+	creem.PostRequest
 	// ProductID the ID of the product associated with the checkout session.
 	ProductID string `json:"product_id,omitempty"`
 	// RequestID identify and track each checkout request.
@@ -27,6 +30,19 @@ type CreateRequest struct {
 	Metadata map[string]any `json:"metadata,omitempty"`
 }
 
+func (r CreateRequest) Gateway() string {
+	return "v1/checkouts"
+}
+
+type GetRequest struct {
+	creem.GetRequest
+	ID string `json:"id,omitempty"`
+}
+
+func (r GetRequest) Gateway() string {
+	return fmt.Sprintf("v1/checkouts?checkout_id=%s", url.QueryEscape(r.ID))
+}
+
 // Customer customer data for checkout session
 type Customer struct {
 	// ID unique identifier of the customer. You may specify only one of these parameters: id or email.
@@ -34,13 +50,6 @@ type Customer struct {
 	// Email customer email address. You may only specify one of these parameters: id, email.
 	Email string `json:"email,omitempty"`
 }
-
-// CustomFieldType the type of the field.
-type CustomFieldType string
-
-const (
-	TextFieldType CustomFieldType = "text"
-)
 
 // TextField configuration for type of text field.
 type TextField struct {
@@ -103,20 +112,6 @@ type Feature struct {
 	// License key issued for the order.
 	License *licenses.License `json:"license,omitempty"`
 }
-
-type OrderStatus string
-
-const (
-	PendingOrder OrderStatus = "pending"
-	PaidOrder    OrderStatus = "paid"
-)
-
-type OrderType string
-
-const (
-	RecurringOrder OrderType = "recurring"
-	OnetimeOrder   OrderType = "onetime"
-)
 
 // Order the order associated with the checkout session.
 type Order struct {

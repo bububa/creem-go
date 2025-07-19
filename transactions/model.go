@@ -1,12 +1,16 @@
 package transactions
 
 import (
+	"fmt"
+	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/bububa/creem-go"
 )
 
 type ListRequest struct {
+	creem.GetRequest
 	// CustomerID The customer id
 	CustomerID string `json:"customer_id,omitempty"`
 	// OrderID The order id
@@ -17,6 +21,22 @@ type ListRequest struct {
 	PageNumber int64 `json:"page_number,omitempty"`
 	// PageSize The the page size
 	PageSize int64 `json:"page_size,omitempty"`
+}
+
+func (r ListRequest) Gateway() string {
+	values := url.Values{}
+	if r.CustomerID != "" {
+		values.Set("customer_id", r.CustomerID)
+	}
+	if r.OrderID != "" {
+		values.Set("order_id", r.OrderID)
+	}
+	if r.ProductID != "" {
+		values.Set("product_id", r.ProductID)
+	}
+	values.Set("page_number", strconv.FormatInt(r.PageNumber, 10))
+	values.Set("page_size", strconv.FormatInt(r.PageSize, 10))
+	return fmt.Sprintf("v1/transactions/search?%s", values.Encode())
 }
 
 type ListResult struct {

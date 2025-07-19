@@ -1,12 +1,16 @@
 package products
 
 import (
+	"fmt"
+	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/bububa/creem-go"
 )
 
 type CreateRequest struct {
+	creem.PostRequest
 	// Name of the product
 	Name string `json:"name,omitempty"`
 	// Price The price of the product in cents
@@ -31,28 +35,33 @@ type CreateRequest struct {
 	// CustomField Collect additional information from your customer using custom fields during checkout. Up to 3 fields are supported.
 }
 
-// BillingType Indicates the billing method for the customer. It can either be a recurring billing cycle or a onetime payment.
-type BillingType string
+func (r CreateRequest) Gateway() string {
+	return "v1/products"
+}
 
-const (
-	RecurringBilling BillingType = "recurring"
-	OnetimeBilling   BillingType = "onetime"
-)
+type GetRequest struct {
+	creem.GetRequest
+	ID string `json:"id,omitempty"`
+}
 
-// TaxMode Specifies the tax calculation mode for the transaction. If set to "inclusive," the tax is included in the price. If set to "exclusive," the tax is added on top of the price.
-type TaxMode string
+func (r GetRequest) Gateway() string {
+	return fmt.Sprintf("v1/products?product_id=%s", url.QueryEscape(r.ID))
+}
 
-const (
-	TaxInclusive TaxMode = "inclusive"
-	TaxExclusive TaxMode = "exclusive"
-)
+type ListRequest struct {
+	creem.GetRequest
+	// PageNumber The page number
+	PageNumber int64 `json:"page_number,omitempty"`
+	// PageSize The the page size
+	PageSize int64 `json:"page_size,omitempty"`
+}
 
-// CustomFieldType the type of the field.
-type CustomFieldType string
-
-const (
-	TextFieldType CustomFieldType = "text"
-)
+func (r ListRequest) Gateway() string {
+	values := url.Values{}
+	values.Set("page_number", strconv.FormatInt(r.PageNumber, 10))
+	values.Set("page_size", strconv.FormatInt(r.PageSize, 10))
+	return fmt.Sprintf("v1/products?%s", values.Encode())
+}
 
 // TextField configuration for type of text field.
 type TextField struct {
