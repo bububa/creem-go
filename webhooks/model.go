@@ -35,24 +35,24 @@ type CheckoutCompletedPayload struct {
 	CustomFields []creem.CustomField         `json:"custom_fields,omitempty"`
 	Units        int64                       `json:"units,omitempty"`
 	SuccessURL   string                      `json:"success_url,omitempty"`
-	Status       string                      `json:"status,omitempty"`
+	Status       checkouts.CheckoutStatus    `json:"status,omitempty"`
 	Metadata     map[string]any              `json:"metadata,omitempty"`
 	Mode         creem.Mode                  `json:"mode,omitempty"`
 }
 
 // SubscriptionPayload common payload in subscription events
 type SubscriptionPayload struct {
-	ID               string              `json:"id,omitempty"`
-	Object           string              `json:"object,omitempty"`
-	Product          *products.Product   `json:"product,omitempty"`
-	Customer         *customers.Customer `json:"customer,omitempty"`
-	CollectionMethod string              `json:"collection_method,omitempty"`
-	Status           string              `json:"status,omitempty"`
-	CanceledAt       time.Time           `json:"canceled_at,omitzero"`
-	CreatedAt        time.Time           `json:"created_at,omitzero"`
-	UpdatedAt        time.Time           `json:"updated_at,omitzero"`
-	Metadata         map[string]any      `json:"metadata,omitempty"`
-	Mode             creem.Mode          `json:"mode,omitempty"`
+	ID               string               `json:"id,omitempty"`
+	Object           string               `json:"object,omitempty"`
+	Product          *products.Product    `json:"product,omitempty"`
+	Customer         *customers.Customer  `json:"customer,omitempty"`
+	CollectionMethod string               `json:"collection_method,omitempty"`
+	Status           subscriptions.Status `json:"status,omitempty"`
+	CanceledAt       time.Time            `json:"canceled_at,omitzero"`
+	CreatedAt        time.Time            `json:"created_at,omitzero"`
+	UpdatedAt        time.Time            `json:"updated_at,omitzero"`
+	Metadata         map[string]any       `json:"metadata,omitempty"`
+	Mode             creem.Mode           `json:"mode,omitempty"`
 }
 
 // SubscriptionActivePayload Received when a new subscription is created, the payment was successful and Creem collected the payment creating a new subscription object in your account. Use only for synchronization, we encourage using subscription.paid for activating access.
