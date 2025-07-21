@@ -1,12 +1,15 @@
 package checkouts
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"time"
 
 	"github.com/bububa/creem-go"
+	"github.com/bububa/creem-go/customers"
 	"github.com/bububa/creem-go/licenses"
+	"github.com/bububa/creem-go/products"
 )
 
 // CreateRequest create checkout request payload
@@ -21,7 +24,7 @@ type CreateRequest struct {
 	// DiscountCode prefill the checkout session with a discount code.
 	DiscountCode string `json:"discount_code,omitempty"`
 	// customer data for checkout session. This will prefill the customer info on the checkout page
-	Customer *Customer `json:"customer,omitempty"`
+	Customer *customers.Customer `json:"customer,omitempty"`
 	// CustomField collect additional information from your customer using custom fields. Up to 3 fields are supported.
 	CustomField []creem.CustomField `json:"custom_field,omitempty"`
 	// SuccessURL the URL to which the user will be redirected after the checkout process is completed.
@@ -43,14 +46,6 @@ func (r GetRequest) Gateway() string {
 	return fmt.Sprintf("v1/checkouts?checkout_id=%s", url.QueryEscape(r.ID))
 }
 
-// Customer customer data for checkout session
-type Customer struct {
-	// ID unique identifier of the customer. You may specify only one of these parameters: id or email.
-	ID string `json:"id,omitempty"`
-	// Email customer email address. You may only specify one of these parameters: id, email.
-	Email string `json:"email,omitempty"`
-}
-
 type Checkout struct {
 	// ID unique identifier for the object.
 	ID string `json:"id,omitempty"`
@@ -61,7 +56,7 @@ type Checkout struct {
 	// Status of the checkout.
 	Status string `json:"status,omitempty"`
 	// Product The product associated with the checkout sessiont.
-	Product string `json:"product,omitempty"`
+	Product *Product `json:"product,omitempty"`
 	// RequestID Identify and track each checkout request.
 	RequestID string `json:"request_id,omitempty"`
 	// Units The number of units for the of the product.
@@ -71,7 +66,7 @@ type Checkout struct {
 	// Subscription The subscription associated with the checkout session.
 	Subscription string `json:"subscription,omitempty"`
 	// Customer The customer associated with the checkout session.
-	Customer string `json:"customer,omitempty"`
+	Customer *Customer `json:"customer,omitempty"`
 	// CustomFields Additional information collected from your customer during the checkout process.
 	CustomFields []creem.CustomField `json:"custom_fields,omitempty"`
 	// CheckoutURL The URL to which the customer will be redirected to complete the payment.
@@ -82,6 +77,38 @@ type Checkout struct {
 	Feature []Feature `json:"feature,omitempty"`
 	// Metadata for the checkout in the form of key-value pairs
 	Metadata map[string]any `json:"metadata,omitempty"`
+}
+
+type Product products.Product
+
+func (p *Product) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		p.ID = s
+		return nil
+	}
+	var prod products.Product
+	if err := json.Unmarshal(data, &prod); err != nil {
+		return err
+	}
+	*p = Product(prod)
+	return nil
+}
+
+type Customer customers.Customer
+
+func (c *Customer) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		c.ID = s
+		return nil
+	}
+	var cust customers.Customer
+	if err := json.Unmarshal(data, &cust); err != nil {
+		return err
+	}
+	*c = Customer(cust)
+	return nil
 }
 
 // Feature features issued for the order.
