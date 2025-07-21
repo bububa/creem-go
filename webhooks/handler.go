@@ -3,6 +3,7 @@ package webhooks
 import (
 	"bytes"
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"io"
@@ -23,16 +24,22 @@ func NewHandler(secret []byte, handler EventHandler) *Handler {
 }
 
 func (h *Handler) Handle(req *http.Request) error {
-	w := new(bytes.Buffer)
-	tee := io.TeeReader(req.Body, w)
-	signature := []byte(req.Header.Get("creem-signature"))
-	if ok, err := verifySignature(tee, h.secret, signature); err != nil {
+	buf := new(bytes.Buffer)
+	if _, err := io.Copy(buf, req.Body); err != nil {
+		return errors.Join(creem.ErrInvalidSignature, err)
+	}
+	sigHex := req.Header.Get("creem-signature")
+	signature, err := hex.DecodeString(sigHex)
+	if err != nil {
+		return errors.Join(creem.ErrInvalidSignature, err)
+	}
+	if ok, err := verifySignature(bytes.NewReader(buf.Bytes()), h.secret, signature); err != nil {
 		return errors.Join(creem.ErrInvalidSignature, err)
 	} else if !ok {
 		return creem.ErrInvalidSignature
 	}
 	var ev Event
-	if err := json.NewDecoder(w).Decode(&ev); err != nil {
+	if err := json.NewDecoder(buf).Decode(&ev); err != nil {
 		return err
 	}
 	if h.handler != nil {
