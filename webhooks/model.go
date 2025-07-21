@@ -23,8 +23,8 @@ type Event struct {
 	Object json.RawMessage `json:"object,omitempty"`
 }
 
-// CheckoutCompletePayload A checkout session was completed, returning all the information about the payment and the order created.
-type CheckoutCompletePayload struct {
+// CheckoutCompletedPayload A checkout session was completed, returning all the information about the payment and the order created.
+type CheckoutCompletedPayload struct {
 	ID           string                      `json:"id,omitempty"`
 	Object       string                      `json:"object,omitempty"`
 	RequestID    string                      `json:"request_id,omitempty"`
@@ -33,6 +33,8 @@ type CheckoutCompletePayload struct {
 	Customer     *customers.Customer         `json:"customer,omitempty"`
 	Subscription *subscriptions.Subscription `json:"subscription,omitempty"`
 	CustomFields []creem.CustomField         `json:"custom_fields,omitempty"`
+	Units        int64                       `json:"units,omitempty"`
+	SuccessURL   string                      `json:"success_url,omitempty"`
 	Status       string                      `json:"status,omitempty"`
 	Metadata     map[string]any              `json:"metadata,omitempty"`
 	Mode         creem.Mode                  `json:"mode,omitempty"`
