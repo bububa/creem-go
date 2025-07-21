@@ -47,7 +47,7 @@ func (c *Client) BaseURL() string {
 
 func (c *Client) Do(ctx context.Context, req Request, resp any) error {
 	var buf io.ReadWriter
-	if req.Method() != http.MethodPost {
+	if req.Method() == http.MethodPost {
 		buf = new(bytes.Buffer)
 		if err := json.NewEncoder(buf).Encode(req); err != nil {
 			return err
