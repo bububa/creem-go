@@ -28,8 +28,8 @@ func (r GetRequest) Gateway() string {
 }
 
 type Customer struct {
-	// CustomerID The unique identifier of the customer
-	CustomerID string `json:"customer_id,omitempty"`
+	// ID The unique identifier of the customer
+	ID string `json:"id,omitempty"`
 	// Email The unique email of the customer
 	Email string `json:"email,omitempty"`
 	// Name Customer name.
