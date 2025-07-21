@@ -54,7 +54,7 @@ type Checkout struct {
 	// Object String representing the object's type. Objects of the same type share the same value.
 	Object string `json:"object,omitempty"`
 	// Status of the checkout.
-	Status string `json:"status,omitempty"`
+	Status CheckoutStatus `json:"status,omitempty"`
 	// Product The product associated with the checkout sessiont.
 	Product *Product `json:"product,omitempty"`
 	// RequestID Identify and track each checkout request.
@@ -131,9 +131,9 @@ type Order struct {
 	// Amount the total amount of the order in cents. 1000 = $10.00
 	Amount int64 `json:"amount,omitempty"`
 	// Currency Three-letter ISO currency code, in uppercase. Must be a supported currency.
-	Currency string `json:"currencye,omitempty"`
+	Currency string `json:"currency,omitempty"`
 	// Status Current status of the order.
-	Status OrderStatus `json:"stats,omitempty"`
+	Status OrderStatus `json:"status,omitempty"`
 	// Type The type of order. This can specify whether it's a regular purchase, subscription, etc.
 	Type OrderType `json:"type,omitempty"`
 	// CreateTime Creation date of the order

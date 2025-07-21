@@ -13,3 +13,10 @@ const (
 	RecurringOrder OrderType = "recurring"
 	OnetimeOrder   OrderType = "onetime"
 )
+
+type CheckoutStatus string
+
+const (
+	PendingCheckout   CheckoutStatus = "pending"
+	CompletedCheckout CheckoutStatus = "completed"
+)
