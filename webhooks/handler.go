@@ -24,13 +24,13 @@ func NewHandler(secret []byte, handler EventHandler) *Handler {
 }
 
 func (h *Handler) Handle(req *http.Request) error {
-	buf := new(bytes.Buffer)
-	if _, err := io.Copy(buf, req.Body); err != nil {
-		return errors.Join(creem.ErrInvalidSignature, err)
-	}
 	sigHex := req.Header.Get("creem-signature")
 	signature, err := hex.DecodeString(sigHex)
 	if err != nil {
+		return errors.Join(creem.ErrInvalidSignature, err)
+	}
+	buf := new(bytes.Buffer)
+	if _, err := io.Copy(buf, req.Body); err != nil {
 		return errors.Join(creem.ErrInvalidSignature, err)
 	}
 	if ok, err := verifySignature(bytes.NewReader(buf.Bytes()), h.secret, signature); err != nil {
