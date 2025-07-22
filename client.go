@@ -6,13 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
 type Client struct {
-	key  string
-	http *http.Client
-	test bool
+	key     string
+	http    *http.Client
+	verbose bool
+	test    bool
 }
 
 func New(key string, opts ...Option) *Client {
@@ -38,6 +40,11 @@ func (c *Client) SetTestMode(v bool) *Client {
 	return c
 }
 
+func (c *Client) SetVerbose(v bool) *Client {
+	c.verbose = v
+	return c
+}
+
 func (c *Client) BaseURL() string {
 	if c.test {
 		return TestBaseURL
@@ -54,6 +61,12 @@ func (c *Client) Do(ctx context.Context, req Request, resp any) error {
 		}
 	}
 	gw := fmt.Sprintf("%s/%s", c.BaseURL(), req.Gateway())
+	if c.verbose {
+		log.Printf("[creem.io] %s: %s\n", req.Method(), gw)
+		if req.Method() == http.MethodPost {
+			log.Printf("[creem.io] PAYLOAD: %s\n", buf.(*bytes.Buffer).String())
+		}
+	}
 	httpReq, err := http.NewRequestWithContext(ctx, req.Method(), gw, buf)
 	if err != nil {
 		return err
@@ -69,6 +82,7 @@ func (c *Client) fetch(req *http.Request, resp any) error {
 		return err
 	}
 	defer httpResp.Body.Close()
+	var r io.Reader
 	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
 		switch httpResp.StatusCode {
 		case 400:
@@ -87,8 +101,13 @@ func (c *Client) fetch(req *http.Request, resp any) error {
 			return ErrUnknown
 		}
 	}
-	if resp != nil {
-		return json.NewDecoder(httpResp.Body).Decode(resp)
+	if c.verbose {
+		var buf bytes.Buffer
+		io.Copy(&buf, httpResp.Body)
+		log.Printf("[creem.io] RESP: %s\n", buf.String())
+		r = &buf
+	} else if resp != nil {
+		r = httpResp.Body
 	}
-	return nil
+	return json.NewDecoder(r).Decode(resp)
 }

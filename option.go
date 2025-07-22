@@ -15,3 +15,9 @@ func WithTestMode(v bool) Option {
 		c.test = v
 	}
 }
+
+func WithVerbose(v bool) Option {
+	return func(c *Client) {
+		c.verbose = v
+	}
+}
